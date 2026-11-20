@@ -1,0 +1,52 @@
+========================================================================
+CRMA SYNTHETIC DATA VALIDATION REPORT
+Generated: 2026-11-20 10:56:10
+Random Seed: 42
+========================================================================
+
+--- ROW COUNTS ---
+  dim_customers                                 CSV:    200   DB:    200
+  dim_plans                                     CSV:      3   DB:      3
+  fact_subscriptions                            CSV:    229   DB:    229
+  fact_support_tickets (CSV incl. dups)         CSV:    707   DB:    704
+  fact_monthly_usage                            CSV:   2489   DB:   2489
+  vw_customer_retention_analytics               DB:    229   Columns: 33
+
+--- FOREIGN KEY INTEGRITY ---
+  fact_subscriptions.customer_id -> dim_customers         PASS
+  fact_subscriptions.plan_id -> dim_plans                 PASS
+  fact_support_tickets.customer_id -> dim_customers       PASS
+  fact_monthly_usage.customer_id -> dim_customers         PASS
+
+--- RANGE / DOMAIN CHECKS ---
+  monthly_fee_inr >= 0                                    PASS
+  tenure_months >= 1                                      PASS
+  login_days BETWEEN 0 AND 31                             PASS
+  csat_score BETWEEN 1 AND 5 (or NULL)                    PASS
+  nps_score BETWEEN 0 AND 10 (or NULL)                    PASS
+  resolution_hours >= 0                                   PASS
+
+--- INJECTED DATA QUALITY ISSUES ---
+  DQ-01: NULL csat_score rows:       1638 / 2489 (65.8%)
+  DQ-01: NULL nps_score rows:        1638 / 2489 (65.8%)
+  DQ-02: Duplicate ticket rows:         3 (removed in DB, present in CSV)
+  DQ-03: Outlier resolution_hours:      5 (> 200 hours)
+
+--- PATTERN VERIFICATION ---
+  PATTERN 1: Higher churn for Starter vs Enterprise
+    Starter         Churned:   23/100  (23.0%)
+    Professional    Churned:   15/78   (19.2%)
+    Enterprise      Churned:    4/41   (9.8%)
+  PATTERN 2: Churned customers have more support tickets
+    Avg tickets (churned):  6.1
+    Avg tickets (retained): 3.4
+  PATTERN 4: Channel churn rates (Referral lowest, Paid Social highest)
+    Organic Search        8/44   (18.2%)
+    Referral              6/29   (20.7%)
+    Paid Social          12/48   (25.0%)
+    Direct                9/35   (25.7%)
+    Partner               7/44   (15.9%)
+
+========================================================================
+OVERALL RESULT: ALL CHECKS PASSED
+========================================================================

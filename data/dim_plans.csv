@@ -1,0 +1,4 @@
+plan_id,plan_name,plan_tier_level,monthly_base_price,max_user_seats,sla_support_level
+PLAN-01,Starter,1,2499.0,5,Standard (48h)
+PLAN-02,Professional,2,7999.0,25,Priority (24h)
+PLAN-03,Enterprise,3,19999.0,100,Dedicated (4h)
