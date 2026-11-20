@@ -3,17 +3,17 @@ src/data_loader.py — Data loading, caching, and validation layer.
 Reads from embedded SQLite DB `data/app.db` with read-only connection.
 Decorated with @st.cache_data for instant interactive performance.
 """
-import os
+from pathlib import Path
 import sqlite3
 import pandas as pd
 import streamlit as st
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "app.db")
+DB_PATH = Path(__file__).resolve().parent.parent / "data" / "app.db"
 
 
 def get_connection():
     """Establish a read-only SQLite connection using URI mode."""
-    db_abs = os.path.abspath(DB_PATH)
+    db_abs = DB_PATH.resolve().as_posix()
     uri = f"file:{db_abs}?mode=ro"
     conn = sqlite3.connect(uri, uri=True)
     conn.execute("PRAGMA foreign_keys = ON")
