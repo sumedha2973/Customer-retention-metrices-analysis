@@ -113,5 +113,4 @@ pytest --cov=src tests/ --cov-report=term-missing
 
 * **Learner:** Sumedha | Roll: 2503201450146
 * **Program:** MCA 2nd Year (Data Analytics), ABES Engineering College
-* **Mentor:** Ms. Anjali Pandey
-* **Course:** Final Year Capstone Project
+* **Mentor:** Ms. Anjali Pandey 
