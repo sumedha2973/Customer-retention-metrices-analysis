@@ -90,8 +90,19 @@ rename_map = {
 }
 table_data = display_df[show_cols].rename(columns=rename_map)
 
+def style_risk_score(val):
+    try:
+        score = float(val)
+        if score >= 70:
+            return "background-color: #fee2e2; color: #991b1b; font-weight: 600;"
+        elif score >= 40:
+            return "background-color: #fef3c7; color: #92400e; font-weight: 600;"
+        return "background-color: #dcfce7; color: #166534; font-weight: 600;"
+    except (ValueError, TypeError):
+        return ""
+
 st.dataframe(
-    table_data.style.background_gradient(subset=["Risk Score"], cmap="Reds"),
+    table_data.style.map(style_risk_score, subset=["Risk Score"]),
     use_container_width=True,
     height=450
 )

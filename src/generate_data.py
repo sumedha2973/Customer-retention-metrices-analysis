@@ -597,15 +597,15 @@ SELECT
             (CASE WHEN u.latest_csat_score <= 2 THEN 20.0 WHEN u.latest_csat_score = 3 THEN 10.0 ELSE 0.0 END) +
             (CASE WHEN s.subscription_status = 'Active' AND julianday(s.end_date) - julianday('now') BETWEEN 0 AND 30 THEN 20.0 ELSE 0.0 END),
             1
-        ) >= 70.0 THEN 'High Risk'
+        ) >= 70.0 THEN 'High'
         WHEN ROUND(
             (CASE WHEN COALESCE(u.avg_login_days, 0) < 5 THEN 35.0 WHEN COALESCE(u.avg_login_days, 0) < 12 THEN 18.0 ELSE 0.0 END) +
             (CASE WHEN COALESCE(t.critical_tickets, 0) >= 2 THEN 25.0 WHEN COALESCE(t.critical_tickets, 0) = 1 THEN 12.0 ELSE 0.0 END) +
             (CASE WHEN u.latest_csat_score <= 2 THEN 20.0 WHEN u.latest_csat_score = 3 THEN 10.0 ELSE 0.0 END) +
             (CASE WHEN s.subscription_status = 'Active' AND julianday(s.end_date) - julianday('now') BETWEEN 0 AND 30 THEN 20.0 ELSE 0.0 END),
             1
-        ) >= 40.0 THEN 'Medium Risk'
-        ELSE 'Low Risk'
+        ) >= 40.0 THEN 'Medium'
+        ELSE 'Low'
     END AS risk_tier
 FROM dim_customers c
 JOIN fact_subscriptions s ON c.customer_id = s.customer_id

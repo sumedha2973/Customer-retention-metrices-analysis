@@ -10,9 +10,18 @@ __pycache__/
 *$py.class
 .pytest_cache/
 
+# Environment variables and secrets
+.env
+.env.*
+.streamlit/secrets.toml
+
+# SQLite temporary files and backups
+*.db-shm
+*.db-wal
+*.bak
+
 # Temporary / Office files
-~$*.xlsx
-~$*.docx
+~$*
 *.tmp
 
 # Operating System files

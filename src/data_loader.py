@@ -48,7 +48,8 @@ def load_analytical_view() -> pd.DataFrame:
         conn.close()
 
     # Ensure validation integrity
-    assert df["customer_id"].is_unique, "Validation Error: customer_id in view must be unique!"
+    assert df["subscription_id"].is_unique, "Validation Error: subscription_id in view must be unique!"
+    assert df["subscription_id"].notnull().all(), "Validation Error: subscription_id cannot be null!"
     assert (df["monthly_fee_inr"] >= 0).all(), "Validation Error: monthly_fee_inr cannot be negative!"
 
     # Optimize categorical types
