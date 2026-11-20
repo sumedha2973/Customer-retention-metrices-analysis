@@ -1,29 +1,28 @@
-# Virtual Environments
+
+# Virtual environments
 .venv/
 venv/
-ENV/
-env/
 
-# Python bytecode & caches
+# Python cache and bytecode
 __pycache__/
 *.py[cod]
-*$py.class
+
+# Test artifacts
 .pytest_cache/
+.coverage
+htmlcov/
+
+# SQLite temporary files and backups
+data/*.db-shm
+data/*.db-wal
+data/*.db.bak
+
+# Microsoft Office temporary lock files
+~$*
 
 # Environment variables and secrets
 .env
 .env.*
+!.env.example
+
 .streamlit/secrets.toml
-
-# SQLite temporary files and backups
-*.db-shm
-*.db-wal
-*.bak
-
-# Temporary / Office files
-~$*
-*.tmp
-
-# Operating System files
-.DS_Store
-Thumbs.db
