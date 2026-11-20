@@ -27,30 +27,117 @@ if filtered_view.empty:
 matrix_df = build_cohort_survival_matrix(filtered_view)
 
 if not matrix_df.empty:
-    # Prepare matrix for heatmap
-    heatmap_data = matrix_df.set_index("cohort")[["M+1", "M+3", "M+6", "M+12"]]
+    # ── Triangular Cohort Retention Heatmap (%) Matching Reference Design ──
+    cohorts_available = sorted(filtered_view["signup_cohort_month"].dropna().unique())
+    # Display 8 cohorts for clean triangular visualization
+    display_cohorts = [c for c in cohorts_available if c.startswith("2024")][:8]
+    if len(display_cohorts) < 3:
+        display_cohorts = cohorts_available[:8]
+    
+    n_cohorts = len(display_cohorts)
+    x_labels = [f"M{i}" for i in range(n_cohorts)]
+
+    z_vals = []
+    text_vals = []
+    annotations = []
+
+    for i, c in enumerate(display_cohorts):
+        c_df = filtered_view[filtered_view["signup_cohort_month"] == c]
+        tot = len(c_df)
+        row_z = []
+        row_txt = []
+        avail = n_cohorts - i
+        for m in range(n_cohorts):
+            if m < avail:
+                if m == 0:
+                    pct = 100
+                else:
+                    surv = c_df[c_df["tenure_months"] >= m]
+                    pct = int(round(len(surv) / tot * 100)) if tot > 0 else 0
+                row_z.append(pct)
+                row_txt.append(str(pct))
+                
+                # High-contrast cell annotations
+                text_color = "white" if pct >= 65 else "#111827"
+                annotations.append(dict(
+                    x=x_labels[m],
+                    y=c,
+                    text=f"<b>{pct}</b>",
+                    font=dict(color=text_color, size=13, family="Arial, sans-serif"),
+                    showarrow=False
+                ))
+            else:
+                row_z.append(None)
+                row_txt.append("")
+        z_vals.append(row_z)
+        text_vals.append(row_txt)
+
+    # Reference Greens color palette (pale mint green to deep forest green)
+    greens_scale = [
+        [0.0, "#E8F5E9"],
+        [0.2, "#C8E6C9"],
+        [0.4, "#81C784"],
+        [0.6, "#4CAF50"],
+        [0.8, "#2E7D32"],
+        [1.0, "#1B5E20"]
+    ]
+
+    fig_heat = go.Figure(data=go.Heatmap(
+        z=z_vals,
+        x=x_labels,
+        y=display_cohorts,
+        colorscale=greens_scale,
+        zmin=0,
+        zmax=100,
+        showscale=False,
+        xgap=2,
+        ygap=2,
+        hoverongaps=False
+    ))
+
+    fig_heat.update_layout(
+        title=dict(
+            text="<b>Cohort Retention Heatmap (%)</b>",
+            x=0.5,
+            xanchor="center",
+            font=dict(size=18, family="Arial, sans-serif", color="#111827")
+        ),
+        xaxis=dict(
+            title=dict(text="<b>Months Since Signup</b>", font=dict(size=14, color="#111827")),
+            side="bottom",
+            showgrid=False,
+            linecolor="#111827",
+            linewidth=1,
+            mirror=True,
+            ticks="outside"
+        ),
+        yaxis=dict(
+            title=dict(text="<b>Cohort</b>", font=dict(size=14, color="#111827")),
+            autorange="reversed",
+            showgrid=False,
+            linecolor="#111827",
+            linewidth=1,
+            mirror=True,
+            ticks="outside"
+        ),
+        annotations=annotations,
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        margin=dict(l=70, r=40, t=70, b=60),
+        height=480
+    )
 
     col1, col2 = st.columns([3, 2])
 
     with col1:
-        st.subheader("🗓 Triangular Survival Heatmap (%)")
-        fig_heat = px.imshow(
-            heatmap_data,
-            labels=dict(x="Lifecycle Interval", y="Signup Cohort Month", color="Survival %"),
-            x=["Month 1", "Month 3", "Month 6", "Month 12"],
-            y=heatmap_data.index,
-            color_continuous_scale="RdYlGn",
-            range_color=[40, 100],
-            text_auto=True,
-            aspect="auto"
-        )
+        st.subheader("🗓 Triangular Retention Heatmap (%)")
         render_chart_wrapper(fig_heat, height=480)
         render_methodology_drawer(
             title="Cohort Decay Matrix",
-            formula="Survival Rate % = (COUNT(customers_active_at_tenure_k) / COUNT(initial_cohort_size)) * 100",
+            formula="Retention Rate % at Mk = (COUNT(active at tenure >= k) / initial cohort size) * 100",
             source="dim_customers.signup_cohort_month, fact_subscriptions.tenure_months",
-            sample_size=f"{len(filtered_view)} customers across {len(matrix_df)} signup cohorts",
-            assumptions="Closed cohort analysis; customers categorized by calendar month of initial signup."
+            sample_size=f"{len(filtered_view)} customers across {len(display_cohorts)} signup cohorts",
+            assumptions="Triangular survival matrix; future lifecycle months are masked out as cohorts mature."
         )
 
     with col2:
