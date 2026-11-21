@@ -1,6 +1,6 @@
 # Streamlit Community Cloud Deployment Guide
 **Project:** Customer Retention Metrics Analysis (CRMA)  
-**Author:** Sumedha | Roll: 2503201450146 | MCA 2nd Year, ABES Engineering College  
+**Author:** Sumedha | Roll: 2500320140149 | MCA 2nd Year, ABES Engineering College  
 **Target Platform:** Streamlit Community Cloud (`share.streamlit.io`)  
 
 ---
@@ -23,10 +23,10 @@ Every item below has been audited and prepared in the local Git repository:
 
 ### Step 1: Push Local Repository to GitHub
 1. Create a new GitHub repository under your personal GitHub account named:  
-   `2503201450146-customer-retention-analysis`
+   `2500320140149-customer-retention-analysis`
 2. Link your local repository and push:
    ```bash
-   git remote add origin https://github.com/<your-github-username>/2503201450146-customer-retention-analysis.git
+   git remote add origin https://github.com/<your-github-username>/2500320140149-customer-retention-analysis.git
    git branch -M main
    git push -u origin main
    ```
@@ -38,11 +38,11 @@ Every item below has been audited and prepared in the local Git repository:
 
 ### Step 3: Configure Deployment Parameters
 Fill in the deployment modal:
-* **Repository:** `<your-github-username>/2503201450146-customer-retention-analysis`
+* **Repository:** `<your-github-username>/2500320140149-customer-retention-analysis`
 * **Branch:** `main`
 * **Main file path:** `app.py`
-* **App URL (Custom Subdomain):** `2503201450146-crma`  
-  *(Yields public live URL: `https://2503201450146-crma.streamlit.app`)*
+* **App URL (Custom Subdomain):** `2500320140149-crma`  
+  *(Yields public live URL: `https://2500320140149-crma.streamlit.app`)*
 
 ### Step 4: Deploy & Monitor Build Log
 1. Click **"Deploy!"**.
